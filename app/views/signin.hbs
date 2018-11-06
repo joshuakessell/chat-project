@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+
+    <div class="jumbotron">
+        <h1 class="display-3">chat</h1>
+        <p class="lead">communicate. collaborate. create.</p>
+    </div>
+    <hr class="my-4">
+    <div class="container fill">
+        <p>please sign in.</p>
+        <p class="lead"><button type="button" class="btn btn-dark btn-md loginbutton" data-toggle="modal"
+                data-target="#localLoginModal">local account.</button>
+            <button type="button" class="btn btn-dark btn-md loginbutton" data-toggle="modal" data-target="#githubLoginModal">github.</button></p>
+        <hr class="my-4">
+        <p>or <a href="./signup">signup</a>.</p>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="localLoginModal" tabindex="-1" role="dialog" aria-labelledby="localLoginTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="localLoginTitle">local login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="local-signin" name="local-signin" method="post" action="signin">
+                        <label for="email">Email Address</label>
+                        <input class="text" name="email" type="text" /></br></br>
+                        <label for="password">Password</label>
+                        <input name="password" type="password" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <input class="btn" type="submit" class="btn btn-primary" id="localLoginButton" value="Login" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="githubLoginModal" tabindex="-1" role="dialog" aria-labelledby="githubLoginTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="githubLoginTitle">github login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="signin-github" name="signin-github" method="post" action="signin">
+                        <label for="email">Email Address</label>
+                        <input class="text" name="email" type="text" /></br></br>
+                        <label for="password">Password</label>
+                        <input name="password" type="password" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="githubLoginButton">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+

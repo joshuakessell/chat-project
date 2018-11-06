@@ -1,0 +1,9 @@
+$(function () {
+
+    // Dependencies
+    
+
+    //Build buddylist
+
+});
+

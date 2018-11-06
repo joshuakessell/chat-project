@@ -1,126 +1,122 @@
 // Dependencies
 const express = require('express');
-const path = require('path');
 const app = express();
-const passport = require('passport')
-const session = require('express-session')
-const bodyParser = require('body-parser')
-const env = require('dotenv').load();
+const path = require('path');
+const passport = require('passport');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const exphbs = require('express-handlebars');
+
+
+// Active Sessions
+var buddyList = [];
 
 // Listen on PORT
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
     console.log(`Our app is running on port ${ PORT }`);
 });
-const io = require('socket.io')(server);
+
+const io = require("socket.io")(server)
 
 // Setting up server to parse the body.
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // For Passport
-
 app.use(session({
     secret: 'secret session',
     resave: true,
     saveUninitialized: true
 })); // session secret
-
 app.use(passport.initialize());
-
 app.use(passport.session()); // persistent login sessions
 
-//set the template engine, ejs
-app.set('view engine', 'ejs');
+// For Handlebars
+app.set('views', './app/views');
+app.engine('hbs', exphbs({extname: '.hbs'}));
+app.set('view engine', '.hbs');
 
 // Setting static directory
-app.use(express.static(path.join(__dirname, '/app/public')));
+app.use(express.static(path.join(__dirname, 'app/public')));
 
-//Setting views directory
-app.set('views', path.join(__dirname, '/app/views'));
-
-//Routes
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-//Models
+// Models
 var models = require("./app/models");
 
-//Sync Database
+// Routes
+const authRoute = require('./app/routes/auth.js')(app, passport);
+
+// Load passport strategies
+require('./app/config/passport/passport.js')(passport, models.user);
+
+// Sync Database
 models.sequelize.sync().then(function () {
-    console.log('Nice! Database looks fine')
+    console.log('Nice! Database looks fine.')
 }).catch(function (err) {
     console.log(err, "Something went wrong with the Database Update!")
 });
 
-//Chatroom
 
-var users = 0;
+// Chatroom
+
+var numUsers = 0;
 
 io.on('connection', (socket) => {
-    
     var addedUser = false;
 
-    //Upon emitting 'add user', execute
-    socket.on('add user', (username) => {
-        if(addedUser) {
-            return;
-        };
-        //storing username in socket session for this client
-        socket.username = username;
-        ++users;
-        addedUser=true;
-        socket.emit('login', {
-            users: users
+    // when the client emits 'new message', this listens and executes
+    socket.on('new message', (data) => {
+        // we tell the client to execute 'new message'
+        socket.broadcast.emit('new message', {
+            username: socket.username,
+            message: data
         });
-        // echo globally that a person has connected
+    });
+
+    // when the client emits 'add user', this listens and executes
+    socket.on('add user', (username) => {
+        console.log(addedUser);
+        if (addedUser) return;
+
+        // we store the username in the socket session for this client
+        socket.username = username;
+        ++numUsers;
+        addedUser = true;
+        console.log('add user - server');
+        socket.emit('login', {
+            numUsers: numUsers
+        });
+        // echo globally (all clients) that a person has connected
         socket.broadcast.emit('user joined', {
             username: socket.username,
-            users: users
-        });
-        console.log(`${socket.username} connected`);
-    });
-    
-
-    //listen on change_username
-    socket.on('change username', (data) => {
-        socket.username = data.username;
-    });
-
-    //listens for disconnect
-    socket.on('disconnect', () => {
-        if(addedUser) {
-            --users;    
-            socket.broadcast.emit('user left', {
-                username: socket.username,
-                users: users
-            });
-        console.log(`${socket.username} disconnected`);
-        }
-    });
-
-    // listen on new message
-    socket.on('new message', (data) => {
-        socket.broadcast.emit('new message', {
-            message: data,
-            username: socket.username
+            numUsers: numUsers
         });
     });
 
-    //listen on typing
+    // when the client emits 'typing', we broadcast it to others
     socket.on('typing', () => {
         socket.broadcast.emit('typing', {
             username: socket.username
-        });  
+        });
     });
 
-    //listen on stop typing
+    // when the client emits 'stop typing', we broadcast it to others
     socket.on('stop typing', () => {
         socket.broadcast.emit('stop typing', {
             username: socket.username
         });
+    });
+
+    // when the user disconnects.. perform this
+    socket.on('disconnect', () => {
+        if (addedUser) {
+            --numUsers;
+
+            // echo globally that this client has left
+            socket.broadcast.emit('user left', {
+                username: socket.username,
+                numUsers: numUsers
+            });
+        }
     });
 });

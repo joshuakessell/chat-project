@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, Sequelize) => {
-  const user = sequelize.define('user', {
+  const User = sequelize.define('user', {
     id: {primaryKey:true,
         autoIncrement: true,
         type: Sequelize.INTEGER
@@ -16,9 +16,6 @@ module.exports = (sequelize, Sequelize) => {
     username: {
         type: Sequelize.TEXT
     },
-    about: {
-        type: Sequelize.TEXT
-    },
     email: {
         type: Sequelize.STRING,
         validate: { isEmail: true }       
@@ -32,8 +29,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     status: {
         type: Sequelize.ENUM('active','inactive'),
-        defaultValue: 'active'
+        defaultValue: 'inactive'
+    },
+    sessionID: {
+        type: Sequelize.STRING,
     }
   }, {});
-  return user;
+  return User;
 };
