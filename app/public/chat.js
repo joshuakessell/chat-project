@@ -16,6 +16,14 @@ var TYPING_TIMER_LENGTH = 400; // ms
 
  var socket = io.connect();
 
+ $(document).ready(function () {
+
+     $('#sidebarCollapse').on('click', function () {
+         $('#sidebar').toggleClass('active');
+     });
+
+ });
+
  const addParticipantsMessage = (data) => {
      var message = '';
      if (data.numUsers === 1) {
