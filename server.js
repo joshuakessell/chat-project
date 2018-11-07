@@ -6,6 +6,19 @@ const passport = require('passport');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
+const mysql = require('mysql');
+var connection;
+
+if (process.env.JAWSDB_URL) {
+    connectoin = mysql.createConnection(process.env.JAWSDB_URL);
+} else {
+    connection = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'root',
+        database: 'sequelize_passport'
+    });
+};
 
 // Listen on PORT
 const PORT = process.env.PORT || 3000;
