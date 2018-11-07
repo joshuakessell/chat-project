@@ -1,8 +1,7 @@
 {
   "name": "chat_project",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "nodemon app",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,5 +26,15 @@
     "popper.js": "^1.14.4",
     "sequelize": "^4.41.0",
     "socket.io": "^2.1.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshuakessell/chat-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joshuakessell/chat-project/issues"
+  },
+  "homepage": "https://github.com/joshuakessell/chat-project#readme",
+  "description": ""
 }

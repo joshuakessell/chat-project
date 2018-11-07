@@ -7,20 +7,23 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 
-
-// Active Sessions
-var buddyList = [];
-
 // Listen on PORT
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
     console.log(`Our app is running on port ${ PORT }`);
 });
 
-const io = require("socket.io")(server)
+const io = require("socket.io")(server);
+
+
+// Setting static directory
+app.use(express.static(path.join(__dirname, 'app/public')));
+
 
 // Setting up server to parse the body.
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json());
 
 // For Passport
@@ -34,11 +37,10 @@ app.use(passport.session()); // persistent login sessions
 
 // For Handlebars
 app.set('views', './app/views');
-app.engine('hbs', exphbs({extname: '.hbs'}));
+app.engine('hbs', exphbs({
+    extname: '.hbs'
+}));
 app.set('view engine', '.hbs');
-
-// Setting static directory
-app.use(express.static(path.join(__dirname, 'app/public')));
 
 // Models
 var models = require("./app/models");
@@ -56,8 +58,6 @@ models.sequelize.sync().then(function () {
     console.log(err, "Something went wrong with the Database Update!")
 });
 
-//local
-
 
 // Chatroom
 
@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
     socket.on('new message', (data) => {
         // we tell the client to execute 'new message'
         socket.broadcast.emit('new message', {
-            username: socket.username,
+            username: socket.id,
             message: data
         });
     });

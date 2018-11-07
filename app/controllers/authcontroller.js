@@ -5,7 +5,7 @@ exports.signup = function (req, res) {
 }
 
 exports.signin = function (req, res) {
-    return res.render('signin') + req.user.username;
+    return res.render('signin');
 }
 
 exports.dashboard = function (req, res) {
