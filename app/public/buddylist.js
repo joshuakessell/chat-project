@@ -1,9 +1,0 @@
-$(function () {
-
-    // Dependencies
-    
-
-    //Build buddylist
-
-});
-

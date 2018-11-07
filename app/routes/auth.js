@@ -28,4 +28,5 @@ module.exports = function (app, passport) {
 
     app.get('/', isLoggedIn, authController.dashboard);
 
+
 }
