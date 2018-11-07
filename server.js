@@ -83,7 +83,7 @@ io.on('connection', (socket) => {
     socket.on('new message', (data) => {
         // we tell the client to execute 'new message'
         socket.broadcast.emit('new message', {
-            username: socket.id,
+            username: socket.id + " ",
             message: data
         });
     });
